@@ -1,3 +1,13 @@
+/*
+    * motor.c
+    *
+    *  Created on: 2024-03-13
+    * Description:
+    *  defines the sets up the motor pins and the PWM channels for 
+    *  the motor and also defines other functions for controlling the motor
+*/
+
+#include"pin_setup.h"
 #include "motor.h"
 
 // TODO: revise pin configuration for setting up pwm with the motor driver useed

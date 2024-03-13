@@ -16,13 +16,28 @@ uint16_t dutyCycle = 2048;
 bool start = false;
 bool clockwise = true;
 
-/*
-    Function - appMain(void)
 
-    Description:
-    This function is the main function for the motor position control app.
-    It sets up the GPIO pins and the ROS middleware.
-*/
+/* ISR for encoder A */
+static void IRAM_ATTR encoderA_ISR(void *args){
+    if(gpio_get_level(PIN_ENCODER_B) == 0){
+        clockwise_direction = true;
+        enconder_a_count++;
+    }else{
+        clockwise_direction = false;
+        enconder_a_count--;
+    }
+    
+}
+
+// /* ISR for encoder B */
+// static void IRAM_ATTR encoderB_ISR(){
+
+// }
+
+/**
+ * @brief This function is the main function for the motor position control app.
+ * It sets up the GPIO pins and the ROS middleware.
+ */
 void appMain(void *args)
 {
     setup_pins();
@@ -30,18 +45,11 @@ void appMain(void *args)
 }
 
 /**
- * @brief This function is a timer callback function that is triggered every 100ms.
- * 
- * @param timer The timer that triggered the callback.
- * @param last_call_time The time when the last call to this function was made.
+ * @brief This function is the keyboard interrupt service routine for the microcontroller.
+ * It listens for keyboard input and sends it as a ROS message.
  */
-void timerCallback(rcl_timer_t *timer, int64_t last_call_time)
+void commandCallback()
 {
-    if (timer == NULL)
-    {
-        return;
-    }
-
     // Read message
     unsigned char data = msg.data;
 

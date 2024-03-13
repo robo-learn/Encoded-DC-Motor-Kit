@@ -1,4 +1,17 @@
+/*
+    * microROS_setup.c
+    *
+    *  Created on: 2024-03-13
+    * 
+    * Description:
+    * Contains the microROS configuration and implementations of microROS agent objects such as
+    * nodes, subscribers etc 
+    * Also implements the main loop for the motor position control app
+    * communication with ROS2
+*/
+#include "pin_setup.h"
 #include "microROS_setup.h"
+
 
 void microROS_setup(){
     // Micro ROS
@@ -10,7 +23,7 @@ void microROS_setup(){
 
     // Create node
     rcl_node_t node;
-    RCCHECK(rclc_node_init_default(&node, "motor_control_app", "", &support));
+    RCCHECK(rclc_node_init_default(&node, "motor_position_control_app", "", &support));
     // Create subcriber
     rcl_subscription_t subscriber;
     RCCHECK(
@@ -22,16 +35,6 @@ void microROS_setup(){
         )
     );
 
-    // Create timer
-    rcl_timer_t timer;
-    RCCHECK(
-        rclc_timer_init_default(
-            &timer, 
-            &support,
-            RCL_MS_TO_NS(FRAME_TIME),
-            timerCallback
-        )
-    );
 
     // Create executor
     rclc_executor_t executor;
@@ -39,11 +42,10 @@ void microROS_setup(){
         rclc_executor_init(&executor, &support.context, 2, &allocator)
     );
 
-    // TODO: Execute node and subscriber
-    
     RCCHECK(
-        rclc_executor_add_timer(&executor, &timer)
-    );
+        rclc_executor_add_subscription(&executor, &subscriber, &msg, commandCallback, ON_NEW_DATA)
+    )
+    
 
     while (1)
     {
