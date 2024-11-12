@@ -1,0 +1,29 @@
+controller_manager:
+  ros__parameters:
+    update_rate: 100
+    use_sim_time: true
+
+    position_controller:
+      type: position_controllers/JointGroupPositionController
+
+    velocity_controller:
+      type: velocity_controllers/JointGroupVelocityController
+
+    joint_state_broad:
+      type: joint_state_broadcaster/JointStateBroadcaster
+
+position_controller:
+  ros__parameters:
+    use_sim_time: true
+    base_frame_id: world_link
+    joints:
+      - shaft_joint
+    interface_name: position
+
+velocity_controller:
+  ros__parameters:
+    use_sim_time: true  
+
+    joints:
+      - shaft_joint
+    interface_name: velocity
